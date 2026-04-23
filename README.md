@@ -70,6 +70,6 @@
 
 ## Приложение фото - коммит базовое ТЗ
 
-![photo1](photo1.jpg)
+![photo1](../vector/src/main/res/drawable/photo1.jpg)
 
-![photo2](photo2.jpg)
+![photo2](../vector/src/main/res/drawable/photo2.jpg)
