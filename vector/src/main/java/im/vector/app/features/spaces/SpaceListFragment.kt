@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.airbnb.epoxy.EpoxyTouchHelper
 import com.airbnb.mvrx.Loading
 import com.airbnb.mvrx.Success
@@ -20,7 +21,6 @@ import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import dagger.hilt.android.AndroidEntryPoint
-import im.vector.app.core.epoxy.onClick
 import im.vector.app.core.extensions.cleanup
 import im.vector.app.core.extensions.configureWith
 import im.vector.app.core.platform.StateView
@@ -31,6 +31,7 @@ import im.vector.app.features.home.HomeSharedActionViewModel
 import im.vector.app.features.home.room.list.actions.RoomListSharedAction
 import im.vector.app.features.home.room.list.actions.RoomListSharedActionViewModel
 import im.vector.app.features.settings.VectorPreferences
+import im.vector.app.features.spaces.compose.SpaceListEmptyState
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import javax.inject.Inject
 
@@ -64,7 +65,10 @@ class SpaceListFragment :
         homeActivitySharedActionViewModel = activityViewModelProvider[HomeSharedActionViewModel::class.java]
         roomListSharedActionViewModel = activityViewModelProvider[RoomListSharedActionViewModel::class.java]
         views.stateView.contentView = views.groupListView
-        views.spacesEmptyButton.onClick { onAddSpaceSelected() }
+        views.spacesEmptyComposeView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        views.spacesEmptyComposeView.setContent {
+            SpaceListEmptyState(onCreateSpaceClick = ::onAddSpaceSelected)
+        }
         setupSpaceController()
         observeViewEvents()
     }
@@ -150,10 +154,10 @@ class SpaceListFragment :
             is Success -> {
                 views.stateView.state = StateView.State.Content
                 if (spaces.invoke().isEmpty()) {
-                    views.spacesEmptyGroup.isVisible = true
+                    views.spacesEmptyComposeView.isVisible = true
                     views.groupListView.isVisible = false
                 } else {
-                    views.spacesEmptyGroup.isVisible = false
+                    views.spacesEmptyComposeView.isVisible = false
                     views.groupListView.isVisible = true
                 }
             }

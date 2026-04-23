@@ -9,6 +9,7 @@ package im.vector.app.features.voice
 
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
+import im.vector.app.core.utils.PermissionChecker
 import kotlinx.coroutines.Dispatchers
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldExist
@@ -20,7 +21,10 @@ import java.io.File
 class VoiceRecorderTests {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val voiceRecorder = VoiceRecorderL(context, Dispatchers.IO, createFakeOpusEncoder())
+    private val permissionChecker = object : PermissionChecker {
+        override fun checkPermission(vararg permissions: String): Boolean = true
+    }
+    private val voiceRecorder = VoiceRecorderL(context, Dispatchers.IO, createFakeOpusEncoder(), permissionChecker)
     private val audioDirectory = File(context.cacheDir, "voice_records")
 
     @After

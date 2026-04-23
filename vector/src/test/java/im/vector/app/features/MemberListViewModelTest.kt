@@ -36,6 +36,7 @@ import org.matrix.android.sdk.api.session.room.members.MembershipService
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.RoomMemberSummary
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
+import org.matrix.android.sdk.api.session.room.powerlevels.RoomPowerLevels
 import org.matrix.android.sdk.api.session.room.state.StateService
 import org.matrix.android.sdk.api.session.user.UserService
 import org.matrix.android.sdk.api.util.Optional
@@ -111,6 +112,7 @@ class MemberListViewModelTest {
             every { getStateEventLive(any(), any()) } returns MutableLiveData()
             every { getStateEventsLive(any(), any()) } returns MutableLiveData()
             every { getStateEvent(any(), any()) } returns null
+            every { getRoomPowerLevelsLive() } returns MutableLiveData(RoomPowerLevels(null, null))
         }
 
         every { stateService() } returns fakeStateService
@@ -238,6 +240,7 @@ class MemberListViewModelTest {
         every { roomService() } returns fakeRoomService
         every { userService() } returns fakeUserService
         every { cryptoService() } returns fakeCryptoService
+        every { myUserId } returns aliceMxid
     }
 
     private val fakeRoomSummary = RoomSummary(

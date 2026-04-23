@@ -10,6 +10,7 @@ package im.vector.app.features.voice
 import android.Manifest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import im.vector.app.core.utils.PermissionChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeNull
@@ -28,7 +29,10 @@ class VoiceRecorderLTests {
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.RECORD_AUDIO)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val recorder = VoiceRecorderL(context, Dispatchers.IO, createFakeOpusEncoder())
+    private val permissionChecker = object : PermissionChecker {
+        override fun checkPermission(vararg permissions: String): Boolean = true
+    }
+    private val recorder = VoiceRecorderL(context, Dispatchers.IO, createFakeOpusEncoder(), permissionChecker)
 
     @Test
     fun startRecordCreatesOggFile() = with(recorder) {

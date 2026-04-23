@@ -37,7 +37,7 @@ class SpaceListBottomSheet : VectorBaseBottomSheetDialogFragment<FragmentSpacesB
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
-            setPeekHeightAsScreenPercentage(0.75f)
+            setPeekHeightAsScreenPercentage(0.3f)
         }
     }
 

@@ -18,6 +18,8 @@ def retrofit = "2.11.0"
 def markwon = "4.6.2"
 def moshi = "1.15.1"
 def lifecycle = "2.8.3"
+def composeBom = "2024.06.00"
+def composeCompiler = "1.5.14"
 def flowBinding = "1.2.0"
 def epoxy = "5.0.0"
 def mavericks = "3.0.9"
@@ -47,6 +49,7 @@ ext.libs = [
         ],
         androidx    : [
                 'activity'                : "androidx.activity:activity-ktx:1.9.0",
+                'activityCompose'         : "androidx.activity:activity-compose:1.9.0",
                 'appCompat'               : "androidx.appcompat:appcompat:1.7.0",
                 'biometric'               : "androidx.biometric:biometric:1.1.0",
                 'core'                    : "androidx.core:core-ktx:1.16.0",
@@ -77,6 +80,14 @@ ext.libs = [
                 'espressoIntents'         : "androidx.test.espresso:espresso-intents:$espresso",
                 'viewpager2'              : "androidx.viewpager2:viewpager2:1.1.0",
                 'transition'              : "androidx.transition:transition:1.5.0",
+                'composeBom'              : "androidx.compose:compose-bom:$composeBom",
+                'composeUi'               : "androidx.compose.ui:ui",
+                'composeMaterial'         : "androidx.compose.material:material",
+                'composeUiToolingPreview' : "androidx.compose.ui:ui-tooling-preview",
+                'composeUiTooling'        : "androidx.compose.ui:ui-tooling",
+                'composeUiTestJunit4'     : "androidx.compose.ui:ui-test-junit4",
+                'composeUiTestManifest'   : "androidx.compose.ui:ui-test-manifest",
+                'composeCompiler'         : composeCompiler,
         ],
         google      : [
                 'material'                : "com.google.android.material:material:1.12.0",

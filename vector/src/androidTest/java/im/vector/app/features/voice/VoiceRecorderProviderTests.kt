@@ -10,6 +10,7 @@ package im.vector.app.features.voice
 import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import im.vector.app.TestBuildVersionSdkIntProvider
+import im.vector.app.core.utils.PermissionChecker
 import im.vector.app.features.DefaultVectorFeatures
 import io.mockk.every
 import io.mockk.spyk
@@ -20,7 +21,17 @@ class VoiceRecorderProviderTests {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val buildVersionSdkIntProvider = TestBuildVersionSdkIntProvider()
-    private val provider = spyk(VoiceRecorderProvider(context, DefaultVectorFeatures(), buildVersionSdkIntProvider))
+    private val permissionChecker = object : PermissionChecker {
+        override fun checkPermission(vararg permissions: String): Boolean = true
+    }
+    private val provider = spyk(
+            VoiceRecorderProvider(
+                    context,
+                    DefaultVectorFeatures(),
+                    buildVersionSdkIntProvider,
+                    permissionChecker
+            )
+    )
 
     @Test
     fun provideVoiceRecorderOnAndroidQAndCodecReturnsQRecorder() {

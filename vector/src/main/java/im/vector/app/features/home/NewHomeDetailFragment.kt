@@ -16,6 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.airbnb.mvrx.activityViewModel
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
@@ -46,6 +50,7 @@ import im.vector.app.features.home.room.list.actions.RoomListSharedAction
 import im.vector.app.features.home.room.list.actions.RoomListSharedActionViewModel
 import im.vector.app.features.home.room.list.home.HomeRoomListFragment
 import im.vector.app.features.home.room.list.home.NewChatBottomSheet
+import im.vector.app.features.home.compose.HomeFabCluster
 import im.vector.app.features.popup.PopupAlertManager
 import im.vector.app.features.popup.VerificationVectorAlert
 import im.vector.app.features.qrcode.QrCodeScannerActivity
@@ -98,6 +103,7 @@ class NewHomeDetailFragment :
                 invalidateOptionsMenu()
             }
         }
+    private var spacesBadgeState: UnreadCounterBadgeView.State? by mutableStateOf(null)
 
     override fun getMenuRes() = R.menu.room_list
 
@@ -205,20 +211,18 @@ class NewHomeDetailFragment :
     }
 
     private fun setupFabs() {
-        showFABs()
-
-        views.newLayoutCreateChatButton.debouncedClicks {
-            newChatBottomSheet.takeIf { !it.isAdded }?.show(requireActivity().supportFragmentManager, NewChatBottomSheet.TAG)
+        views.newLayoutFabComposeView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        views.newLayoutFabComposeView.setContent {
+            HomeFabCluster(
+                    spacesBadgeState = spacesBadgeState,
+                    onCreateChatClick = {
+                        newChatBottomSheet.takeIf { !it.isAdded }?.show(requireActivity().supportFragmentManager, NewChatBottomSheet.TAG)
+                    },
+                    onOpenSpacesClick = {
+                        spaceListBottomSheet.takeIf { !it.isAdded }?.show(requireActivity().supportFragmentManager, SpaceListBottomSheet.TAG)
+                    }
+            )
         }
-
-        views.newLayoutOpenSpacesButton.debouncedClicks {
-            spaceListBottomSheet.takeIf { !it.isAdded }?.show(requireActivity().supportFragmentManager, SpaceListBottomSheet.TAG)
-        }
-    }
-
-    private fun showFABs() {
-        views.newLayoutCreateChatButton.show()
-        views.newLayoutOpenSpacesButton.show()
     }
 
     private fun setCurrentSpace(spaceId: String?) {
@@ -398,7 +402,7 @@ class NewHomeDetailFragment :
     }
 
     private fun refreshUnreadCounterBadge(badgeState: UnreadCounterBadgeView.State) {
-        views.spacesUnreadCounterBadge.render(badgeState)
+        spacesBadgeState = badgeState
     }
 
     override fun onTapToReturnToCall() {

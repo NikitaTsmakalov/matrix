@@ -35,6 +35,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
@@ -148,6 +152,7 @@ import im.vector.app.features.home.room.detail.timeline.url.PreviewUrlRetriever
 import im.vector.app.features.home.room.detail.upgrade.MigrateRoomBottomSheet
 import im.vector.app.features.home.room.detail.views.RoomDetailLazyLoadedViews
 import im.vector.app.features.home.room.detail.widget.RoomWidgetsBottomSheet
+import im.vector.app.features.home.room.detail.compose.JumpToReadMarkerChip
 import im.vector.app.features.home.room.threads.ThreadsManager
 import im.vector.app.features.home.room.threads.arguments.ThreadTimelineArgs
 import im.vector.app.features.html.EventHtmlRenderer
@@ -255,6 +260,7 @@ class TimelineFragment :
     private val messageComposerViewModel: MessageComposerViewModel by fragmentViewModel()
     private val debouncer = Debouncer(createUIHandler())
     private val itemVisibilityTracker = EpoxyVisibilityTracker()
+    private var showJumpToReadMarker by mutableStateOf(false)
 
     private lateinit var scrollOnNewMessageCallback: ScrollOnNewMessageCallback
     private lateinit var scrollOnHighlightedEventCallback: ScrollOnHighlightedEventCallback
@@ -718,11 +724,13 @@ class TimelineFragment :
     }
 
     private fun setupJumpToReadMarkerView() {
-        views.jumpToReadMarkerView.debouncedClicks {
-            onJumpToReadMarkerClicked()
-        }
-        views.jumpToReadMarkerView.setOnCloseIconClickListener {
-            timelineViewModel.handle(RoomDetailAction.MarkAllAsRead)
+        views.jumpToReadMarkerComposeView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        views.jumpToReadMarkerComposeView.setContent {
+            JumpToReadMarkerChip(
+                    visible = showJumpToReadMarker,
+                    onClick = ::onJumpToReadMarkerClicked,
+                    onCloseClick = { timelineViewModel.handle(RoomDetailAction.MarkAllAsRead) }
+            )
         }
     }
 
@@ -1122,7 +1130,8 @@ class TimelineFragment :
                             }
                         }
                     }
-                    views.jumpToReadMarkerView.isVisible = showJumpToUnreadBanner
+                    showJumpToReadMarker = showJumpToUnreadBanner
+                    views.jumpToReadMarkerComposeView.isVisible = showJumpToUnreadBanner
                 }
             }
         }

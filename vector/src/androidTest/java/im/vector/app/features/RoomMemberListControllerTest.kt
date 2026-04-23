@@ -12,6 +12,8 @@ import im.vector.app.core.epoxy.profiles.ProfileMatrixItemWithPowerLevelWithPres
 import im.vector.app.features.roomprofile.members.RoomMemberListCategories
 import im.vector.app.features.roomprofile.members.RoomMemberListController
 import im.vector.app.features.roomprofile.members.RoomMemberListViewState
+import im.vector.app.features.roomprofile.members.RoomMemberWithPowerLevel
+import im.vector.app.features.roomprofile.permissions.RoleFormatter
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -22,6 +24,7 @@ import org.matrix.android.sdk.api.session.crypto.model.UserVerificationLevel
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.RoomMemberSummary
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
+import org.matrix.android.sdk.api.session.room.powerlevels.UserPowerLevel
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -43,6 +46,9 @@ class RoomMemberListControllerTest {
                 },
                 roomMemberSummaryFilter = mockk(relaxed = true) {
                     every { test(any()) } returns true
+                },
+                roleFormatter = mockk<RoleFormatter> {
+                    every { format(any()) } returns ""
                 }
         )
 
@@ -62,21 +68,33 @@ class RoomMemberListControllerTest {
                 roomMemberSummaries = Success(
                         listOf(
                                 RoomMemberListCategories.USER to listOf(
-                                        RoomMemberSummary(
-                                                membership = Membership.JOIN,
-                                                userId = "@alice:example.com"
+                                        RoomMemberWithPowerLevel(
+                                                powerLevel = UserPowerLevel.User,
+                                                summary = RoomMemberSummary(
+                                                        membership = Membership.JOIN,
+                                                        userId = "@alice:example.com"
+                                                )
                                         ),
-                                        RoomMemberSummary(
-                                                membership = Membership.JOIN,
-                                                userId = "@bob:example.com"
+                                        RoomMemberWithPowerLevel(
+                                                powerLevel = UserPowerLevel.User,
+                                                summary = RoomMemberSummary(
+                                                        membership = Membership.JOIN,
+                                                        userId = "@bob:example.com"
+                                                )
                                         ),
-                                        RoomMemberSummary(
-                                                membership = Membership.JOIN,
-                                                userId = "@carl:example.com"
+                                        RoomMemberWithPowerLevel(
+                                                powerLevel = UserPowerLevel.User,
+                                                summary = RoomMemberSummary(
+                                                        membership = Membership.JOIN,
+                                                        userId = "@carl:example.com"
+                                                )
                                         ),
-                                        RoomMemberSummary(
-                                                membership = Membership.JOIN,
-                                                userId = "@massy:example.com"
+                                        RoomMemberWithPowerLevel(
+                                                powerLevel = UserPowerLevel.User,
+                                                summary = RoomMemberSummary(
+                                                        membership = Membership.JOIN,
+                                                        userId = "@massy:example.com"
+                                                )
                                         )
                                 )
                         )

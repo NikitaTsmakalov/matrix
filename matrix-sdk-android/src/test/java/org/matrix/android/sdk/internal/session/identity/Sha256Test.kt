@@ -16,12 +16,15 @@
 
 package org.matrix.android.sdk.internal.session.identity
 
+import android.os.Build
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.TIRAMISU])
 class Sha256Test {
     /**
      * Check that the behavior is the same than what is done in the Olm library.
